@@ -1,6 +1,6 @@
 package org.example;
 
-public abstract class semaphore {
+public class semaphore {
 
     protected int valeur=0;
 

@@ -6,7 +6,9 @@ import javax.swing.*;
 class UnMobile extends JPanel implements Runnable
 {
     int saLargeur, saHauteur, sonDebDessin;
-    final int sonPas = 20, sonTemps=50, sonCote=40;
+    final int sonPas = 20, sonTemps=100, sonCote=40;
+
+    static semaphore sem = new semaphore(1);
 
     UnMobile(int telleLargeur, int telleHauteur)
     {
@@ -18,19 +20,56 @@ class UnMobile extends JPanel implements Runnable
 
     public void run() {
         while (true){
-            for (sonDebDessin=0; sonDebDessin < saLargeur - sonPas; sonDebDessin+= sonPas) {
+            for (sonDebDessin=0; sonDebDessin < saLargeur/3; sonDebDessin+= sonPas) {
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
                 {telleExcp.printStackTrace();}
             }
-            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= 0; sonDebDessin-= sonPas) {
+            sem.syncWait();
+            for (sonDebDessin=saLargeur/3; sonDebDessin < 2*(saLargeur/3); sonDebDessin+= sonPas) {
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
                 {telleExcp.printStackTrace();}
             }
+            sem.syncSignal();
+            for (sonDebDessin=2*(saLargeur/3); sonDebDessin < saLargeur; sonDebDessin+= sonPas) {
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
+            sem.syncWait();
+
+
+            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= 2*(saLargeur/3); sonDebDessin-= saLargeur/3 + sonPas) {
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
+            sem.syncSignal();
+            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= saLargeur/3; sonDebDessin-= saLargeur/3 + sonPas) {
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
+            sem.syncWait();
+            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= 0; sonDebDessin-= saLargeur/3 + sonPas) {
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
+            sem.syncSignal();
+
+
+
         }
+
+
     }
 
 

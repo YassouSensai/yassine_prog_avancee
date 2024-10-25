@@ -4,8 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 
 class UneFenetre extends JFrame {
-    private final int LARG = 500, HAUT = 100; // Hauteur réduite pour une ligne
-    private final int NB_LIGNES = 5;
+    private final int LARG = 1000, HAUT = 100; // Hauteur réduite pour une ligne
+    private final int NB_LIGNES = 20;
 
     public UneFenetre() {
         super("Le Mobile");
@@ -21,9 +21,5 @@ class UneFenetre extends JFrame {
 
         setSize(LARG, NB_LIGNES * HAUT); // Ajuste la taille de la fenêtre
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new UneFenetre());
     }
 }
