@@ -1,12 +1,9 @@
 package tp3;
 
-import java.io.*;
-import java.util.*;
-
 /**
  *
  */
-public class Consommateur extends Thread {
+public class Facteur extends Thread {
 
     /**
      *
@@ -16,7 +13,7 @@ public class Consommateur extends Thread {
     /**
      * Default constructor
      */
-    public Consommateur(BoiteALettre bal) {
+    public Facteur(BoiteALettre bal) {
         boiteALettre = bal;
     }
 

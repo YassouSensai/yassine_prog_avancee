@@ -6,7 +6,7 @@ public class Main {
 
         Producteur prod1 = new Producteur(bal);
 
-        Consommateur cons = new Consommateur(bal);
+        Facteur cons = new Facteur(bal);
 
         prod1.start();
 
