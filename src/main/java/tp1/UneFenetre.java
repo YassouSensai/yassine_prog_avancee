@@ -1,11 +1,11 @@
-package org.example;
+package tp1;
 
 import java.awt.*;
 import javax.swing.*;
 
 class UneFenetre extends JFrame {
     private final int LARG = 1000, HAUT = 100; // Hauteur réduite pour une ligne
-    private final int NB_LIGNES = 20;
+    private final int NB_LIGNES = 3;
 
     public UneFenetre() {
         super("Le Mobile");

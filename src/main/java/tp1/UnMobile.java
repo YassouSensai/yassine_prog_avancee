@@ -1,4 +1,4 @@
-package org.example;
+package tp1;
 
 import java.awt.*;
 import javax.swing.*;
@@ -18,23 +18,11 @@ class UnMobile extends JPanel implements Runnable
         setSize(telleLargeur, telleHauteur);
     }
 
-    public void run() {
+    public void run()
+    {
         while (true){
-            for (sonDebDessin=0; sonDebDessin < saLargeur/3; sonDebDessin+= sonPas) {
-                repaint();
-                try{Thread.sleep(sonTemps);}
-                catch (InterruptedException telleExcp)
-                {telleExcp.printStackTrace();}
-            }
-            sem.syncWait();
-            for (sonDebDessin=saLargeur/3; sonDebDessin < 2*(saLargeur/3); sonDebDessin+= sonPas) {
-                repaint();
-                try{Thread.sleep(sonTemps);}
-                catch (InterruptedException telleExcp)
-                {telleExcp.printStackTrace();}
-            }
-            sem.syncSignal();
-            for (sonDebDessin=2*(saLargeur/3); sonDebDessin < saLargeur; sonDebDessin+= sonPas) {
+            for (sonDebDessin=0; sonDebDessin < saLargeur/3 - sonCote; sonDebDessin+= sonPas)
+            {
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
@@ -42,35 +30,48 @@ class UnMobile extends JPanel implements Runnable
             }
             sem.syncWait();
 
-
-            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= 2*(saLargeur/3); sonDebDessin-= saLargeur/3 + sonPas) {
+            for (sonDebDessin = sonDebDessin ; sonDebDessin < (saLargeur/3)*2 - sonCote; sonDebDessin+= sonPas)
+            {
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
                 {telleExcp.printStackTrace();}
             }
             sem.syncSignal();
-            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= saLargeur/3; sonDebDessin-= saLargeur/3 + sonPas) {
+
+            for (sonDebDessin = sonDebDessin ; sonDebDessin < saLargeur - sonCote; sonDebDessin+= sonPas)
+            {
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
                 {telleExcp.printStackTrace();}
             }
+
+
+            for (sonDebDessin = saLargeur-sonCote; sonDebDessin > (saLargeur/3)*2; sonDebDessin -= sonPas){
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
+
             sem.syncWait();
-            for (sonDebDessin=saLargeur - sonPas; sonDebDessin >= 0; sonDebDessin-= saLargeur/3 + sonPas) {
+            for (sonDebDessin = sonDebDessin; sonDebDessin > saLargeur/3; sonDebDessin -= sonPas){
                 repaint();
                 try{Thread.sleep(sonTemps);}
                 catch (InterruptedException telleExcp)
                 {telleExcp.printStackTrace();}
             }
             sem.syncSignal();
-
-
-
+            for (sonDebDessin = sonDebDessin; sonDebDessin > 0; sonDebDessin -= sonPas){
+                repaint();
+                try{Thread.sleep(sonTemps);}
+                catch (InterruptedException telleExcp)
+                {telleExcp.printStackTrace();}
+            }
         }
-
-
     }
+
 
 
     public void paintComponent(Graphics telCG)
