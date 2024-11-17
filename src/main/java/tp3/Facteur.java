@@ -1,7 +1,7 @@
 package tp3;
 
 /**
- *
+ * Classe Facteur (Consommateur)
  */
 public class Facteur extends Thread {
 
@@ -11,7 +11,7 @@ public class Facteur extends Thread {
     private BoiteALettre boiteALettre;
 
     /**
-     * Default constructor
+     *
      */
     public Facteur(BoiteALettre bal) {
         boiteALettre = bal;
@@ -39,7 +39,7 @@ public class Facteur extends Thread {
                     break;
                 }
 
-                System.out.println("J'ai récupéré la lettre : " + lettreRecupere + " | Nombre dans la file : " + boiteALettre.getQueueSize());
+                System.out.println("J'ai récupéré la lettre " + lettreRecupere + " || Etat de la file => " + boiteALettre.getQueueSize());
 
             }
         } catch (InterruptedException e) {

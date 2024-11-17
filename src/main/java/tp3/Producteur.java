@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- *
+ * Classe Producteur
  */
 public class Producteur extends Thread {
 
@@ -41,7 +41,7 @@ public class Producteur extends Thread {
                     if (!boiteALettre.deposer(lettreAPoster)) {
                         System.out.println("Echec de dépôt de la lettre : " + lettreAPoster);
                     } else {
-                        System.out.println("J'ai déposé la lettre : " + lettreAPoster + " | Nombre dans la file : " + boiteALettre.getQueueSize());
+                        System.out.println("J'ai déposé la lettre " + lettreAPoster + " || Etat de la file => " + boiteALettre.getQueueSize());
                         break;
                     }
                 }

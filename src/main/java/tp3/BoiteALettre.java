@@ -5,7 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Classe BoiteALettre (Boulangerie)
  */
 public class BoiteALettre {
 
