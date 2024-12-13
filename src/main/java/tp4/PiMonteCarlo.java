@@ -9,6 +9,11 @@ class PiMonteCarlo {
     AtomicInteger nAtomSuccess;
     int nThrows;
     double value;
+
+    int nb_proc;
+    int n_total;
+
+
     class MonteCarlo implements Runnable {
         @Override
         public void run() {
@@ -18,14 +23,16 @@ class PiMonteCarlo {
                 nAtomSuccess.incrementAndGet();
         }
     }
-    public PiMonteCarlo(int i) {
+    public PiMonteCarlo(int i, int nb_proc, int n_total) {
         this.nAtomSuccess = new AtomicInteger(0);
         this.nThrows = i;
         this.value = 0;
+
+        this.nb_proc = nb_proc;
+        this.n_total = n_total;
     }
     public double getPi() {
-        int nProcessors = Runtime.getRuntime().availableProcessors();
-        ExecutorService executor = Executors.newWorkStealingPool(nProcessors);
+        ExecutorService executor = Executors.newWorkStealingPool(this.nb_proc);
         for (int i = 1; i <= nThrows; i++) {
             Runnable worker = new MonteCarlo();
             executor.execute(worker);
