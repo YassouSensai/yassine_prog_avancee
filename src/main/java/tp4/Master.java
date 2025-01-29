@@ -72,6 +72,9 @@ class Master {
     private void writeResultsToFile(int totalCount, int numWorkers, double pi, long duration, double sp) throws IOException {
         String filePath = "./results.csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            if (new java.io.File(filePath).length() == 0) {
+                writer.write("Ntot,NbProc,Pi,Time,SpeedUp\n");
+            }
             writer.write(totalCount + "," + numWorkers + "," + pi + "," + duration + "," + sp + "\n");
         }
     }
