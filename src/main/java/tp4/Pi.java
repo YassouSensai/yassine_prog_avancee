@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Pi {
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-        try (FileWriter writer = new FileWriter("/Users/yassine/Documents/BUT3/qualite_developpement/yassine_prog_avancee/src/main/java/tp4/processus.csv")) {
+        try (FileWriter writer = new FileWriter("./processus.csv")) {
             writer.write("NumWorkers,Evaluation,Time\n");
             for (int numWorkers = 1; numWorkers <= 8; numWorkers++) {
                 for (int evaluation = 1; evaluation <= 10; evaluation++) {

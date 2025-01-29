@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Charger les fichiers CSV
-results = pd.read_csv("/Users/yassine/Documents/BUT3/qualite_developpement/yassine_prog_avancee/src/main/java/tp4/results.csv")
-processus = pd.read_csv("/Users/yassine/Documents/BUT3/qualite_developpement/yassine_prog_avancee/src/main/java/tp4/processus.csv")
+results = pd.read_csv("./results.csv")
+processus = pd.read_csv("./processus.csv")
 
 # Calculer T1 : Moyenne des temps pour NbProc = 1
 T1 = results[results["NbProc"] == 1]["Time"].mean()

@@ -70,7 +70,7 @@ class Master {
     }
 
     private void writeResultsToFile(int totalCount, int numWorkers, double pi, long duration, double sp) throws IOException {
-        String filePath = "/Users/yassine/Documents/BUT3/qualite_developpement/yassine_prog_avancee/src/main/java/tp4/results.csv";
+        String filePath = "./results.csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(totalCount + "," + numWorkers + "," + pi + "," + duration + "," + sp + "\n");
         }
