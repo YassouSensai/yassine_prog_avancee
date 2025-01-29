@@ -1,26 +1,22 @@
 package tp4;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-/**
- * Approximates PI using the Monte Carlo method.  Demonstrates
- * use of Callables, Futures, and thread pools.
- */
-public class Pi 
-{
-    public static void main(String[] args) throws Exception 
-    {
-	long total=0;
-	// 10 workers, 50000 iterations each
-	total = new Master().doRun(50000, 10);
-	System.out.println("total from Master = " + total);
+public class Pi {
+    public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
+        try (FileWriter writer = new FileWriter("/Users/yassine/Documents/BUT3/qualite_developpement/yassine_prog_avancee/src/main/java/tp4/processus.csv")) {
+            writer.write("NumWorkers,Evaluation,Time\n");
+            for (int numWorkers = 1; numWorkers <= 8; numWorkers++) {
+                for (int evaluation = 1; evaluation <= 10; evaluation++) {
+                    long startTime = System.nanoTime();
+                    new Master().doRun(50000, numWorkers);
+                    long endTime = System.nanoTime();
+                    long duration = (endTime - startTime) / 1000000; // Convert to milliseconds
+                    writer.write(numWorkers + "," + evaluation + "," + duration + "\n");
+                }
+            }
+        }
     }
 }
-
