@@ -42,6 +42,7 @@ build/
 *.xml
 
 
-### results.csv ###
+### results.csv & results.txt ###
 /src/main/java/tp4/results.csv
 /src/main/java/tp4/results.txt
+/src/main/java/tp4_socket/results.txt
