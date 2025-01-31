@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.Random;
 
+import tp4.*;
+
+
 public class WorkerSocket {
     static int port = 25545; // default port
     private static boolean isRunning = true;

@@ -11,7 +11,7 @@ public class Pi {
 
         for (int totalCount : totalCounts) {
             for (int workers : numWorkers) {
-                for (int evaluation = 1; evaluation <= 100; evaluation++) {
+                for (int evaluation = 1; evaluation <= 1000; evaluation++) {
                     master.doRun(totalCount, workers, "src/main/java/tp4/results.txt");
                 }
             }

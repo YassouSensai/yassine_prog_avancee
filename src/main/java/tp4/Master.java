@@ -48,7 +48,7 @@ public class Master {
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount * numWorkers) + " " + numWorkers + " " + (stopTime - startTime));
+            writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount) + " " + numWorkers + " " + (stopTime - startTime));
             writer.newLine();   // Retour à la ligne
             writer.close();
             System.out.println("Fichier ecrit");
