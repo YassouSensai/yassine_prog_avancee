@@ -5,79 +5,104 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 
-class Master {
-    // Cette méthode effectue le calcul parallèle et enregistre les résultats dans un fichier CSV.
-    public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException, IOException {
+/**
+ * Creates workers to run the Monte Carlo simulation
+ * and aggregates the results.
+ */
+public class Master {
+    public Master(){}
+
+    public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
+
         long startTime = System.currentTimeMillis();
 
-        // Création des tâches pour chaque worker
-        List<Callable<Long>> tasks = new ArrayList<>();
-        int baseCount = totalCount / numWorkers;
-        int remainder = totalCount % numWorkers;
-
-        // Assignation du travail entre les workers
-        for (int i = 0; i < numWorkers; i++) {
-            int taskSize = baseCount + (i < remainder ? 1 : 0);
-            tasks.add(new Worker(taskSize)); // Crée une nouvelle tâche pour chaque worker
+        // Create a collection of tasks
+        List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
+        for (int i = 0; i < numWorkers; ++i) {
+            tasks.add(new Worker(totalCount));
         }
 
-        // Exécution des tâches dans un pool de threads
+        // Run them and receive a collection of Futures
         ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
         List<Future<Long>> results = exec.invokeAll(tasks);
         long total = 0;
 
-        // Collecte des résultats de chaque worker
+        // Assemble the results.
         for (Future<Long> f : results) {
+            // Call to get() is an implicit barrier.  This will block
+            // until result from corresponding worker is ready.
             total += f.get();
         }
-
-        // Calcul de Pi
-        double pi = 4.0 * total / totalCount;
+        double pi = 4.0 * total / totalCount / numWorkers;
 
         long stopTime = System.currentTimeMillis();
-        long duration = stopTime - startTime;
 
-        // Enregistrement des résultats dans le fichier CSV sans calculer le speedup
-        writeResultsToFile(totalCount, numWorkers, pi, duration);
+        System.out.println("\nValeur approché: " + pi);
+        System.out.println("Erreur: " + String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)));
 
-        exec.shutdown();
-        return duration;
-    }
+        System.out.println("N total: " + totalCount * numWorkers);
+        System.out.println("Nombre process: " + numWorkers);
+        System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
 
-    // Cette méthode effectue une estimation de Pi de manière séquentielle
-    private long measureSequentialTime(int totalCount) {
-        int nAtomSuccess = 0;
-        Random random = new Random();
-        long startTime = System.currentTimeMillis();
+        try {
+            // Code tiré d'openclassroom
+            // Création d'un fileWriter pour écrire dans un fichier
+            FileWriter fileWriter = new FileWriter(filename, true);
 
-        // Calcul séquentiel de Pi
-        for (int i = 0; i < totalCount; i++) {
-            double x = random.nextDouble();
-            double y = random.nextDouble();
-            if (x * x + y * y <= 1) {
-                nAtomSuccess++;
-            }
+            // Création d'un bufferedWriter qui utilise le fileWriter
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+
+            // ajout d'un texte à notre fichier
+            writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount * numWorkers) + " " + numWorkers + " " + (stopTime - startTime));
+
+            // Retour à la ligne
+            writer.newLine();
+            writer.close();
+            System.out.println("Fichier ecrit");
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        long stopTime = System.currentTimeMillis();
-        long duration = stopTime - startTime;
-
-        double pi = 4.0 * nAtomSuccess / totalCount;
-        System.out.printf("Pi séquentiel: %.5f | Durée séquentielle: %d ms%n", pi, duration);
-
-        return duration;
+        exec.shutdown();
+        return total;
     }
 
-    private void writeResultsToFile(int totalCount, int numWorkers, double pi, long duration) throws IOException {
-        String filePath = "src/main/java/tp4/results.csv";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            if (new java.io.File(filePath).length() == 0) {
-                writer.write("Ntot,NbProc,Error,Time\n"); // Enregistrement sans le SpeedUp
-            }
-            System.out.println((totalCount + "," + numWorkers + "," + String.format("%.5e", Math.abs(Math.PI - pi)) + "," + duration + "\n"));
-            writer.write(totalCount + "," + numWorkers + "," + String.format("%.5e", Math.abs(Math.PI - pi)) + "," + duration + "\n");        }
+    public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException {
+
+        long startTime = System.currentTimeMillis();
+
+        // Create a collection of tasks
+        List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
+        for (int i = 0; i < numWorkers; ++i) {
+            tasks.add(new Worker(totalCount));
+        }
+
+        // Run them and receive a collection of Futures
+        ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
+        List<Future<Long>> results = exec.invokeAll(tasks);
+        long total = 0;
+
+        // Assemble the results.
+        for (Future<Long> f : results) {
+            // Call to get() is an implicit barrier.  This will block
+            // until result from corresponding worker is ready.
+            total += f.get();
+        }
+        double pi = 4.0 * total / totalCount / numWorkers;
+
+        long stopTime = System.currentTimeMillis();
+
+        System.out.println("\nValeur approché: " + pi);
+        System.out.println("Erreur: " + String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)));
+
+        System.out.println("N total: " + totalCount * numWorkers);
+        System.out.println("Nombre process: " + numWorkers);
+        System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
+
+        exec.shutdown();
+        return total;
     }
 }

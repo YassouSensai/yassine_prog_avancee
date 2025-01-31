@@ -44,3 +44,4 @@ build/
 
 ### results.csv ###
 /src/main/java/tp4/results.csv
+/src/main/java/tp4/results.txt
