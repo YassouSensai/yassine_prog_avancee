@@ -40,3 +40,7 @@ build/
 
 
 *.xml
+
+
+### results.csv ###
+/src/main/java/tp4/results.csv

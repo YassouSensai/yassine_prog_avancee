@@ -9,48 +9,51 @@ import java.util.Random;
 import java.util.concurrent.*;
 
 class Master {
+    // Cette méthode effectue le calcul parallèle et enregistre les résultats dans un fichier CSV.
     public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException, IOException {
-        long t1 = measureSequentialTime(totalCount);
-
         long startTime = System.currentTimeMillis();
 
+        // Création des tâches pour chaque worker
         List<Callable<Long>> tasks = new ArrayList<>();
-        for (int i = 0; i < numWorkers; ++i) {
-            tasks.add(new Worker(totalCount / numWorkers));
+        int baseCount = totalCount / numWorkers;
+        int remainder = totalCount % numWorkers;
+
+        // Assignation du travail entre les workers
+        for (int i = 0; i < numWorkers; i++) {
+            int taskSize = baseCount + (i < remainder ? 1 : 0);
+            tasks.add(new Worker(taskSize)); // Crée une nouvelle tâche pour chaque worker
         }
 
+        // Exécution des tâches dans un pool de threads
         ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
         List<Future<Long>> results = exec.invokeAll(tasks);
         long total = 0;
 
+        // Collecte des résultats de chaque worker
         for (Future<Long> f : results) {
             total += f.get();
         }
+
+        // Calcul de Pi
         double pi = 4.0 * total / totalCount;
 
         long stopTime = System.currentTimeMillis();
         long duration = stopTime - startTime;
 
-        double sp = duration > 0 ? (double) t1 / duration : 0;
-
-        System.out.println("\nPi : " + pi);
-        System.out.println("Erreur : " + (Math.abs((pi - Math.PI)) / Math.PI) + "\n");
-
-        System.out.println("Ntot : " + totalCount);
-        System.out.println("Nombre de processeurs disponibles : " + numWorkers);
-        System.out.println("Durée (ms) : " + duration + "\n");
-
-        writeResultsToFile(totalCount, numWorkers, pi, duration, sp);
+        // Enregistrement des résultats dans le fichier CSV sans calculer le speedup
+        writeResultsToFile(totalCount, numWorkers, pi, duration);
 
         exec.shutdown();
-        return total;
+        return duration;
     }
 
+    // Cette méthode effectue une estimation de Pi de manière séquentielle
     private long measureSequentialTime(int totalCount) {
-        long startTime = System.currentTimeMillis();
         int nAtomSuccess = 0;
         Random random = new Random();
+        long startTime = System.currentTimeMillis();
 
+        // Calcul séquentiel de Pi
         for (int i = 0; i < totalCount; i++) {
             double x = random.nextDouble();
             double y = random.nextDouble();
@@ -59,23 +62,22 @@ class Master {
             }
         }
 
-        double pi = 4.0 * nAtomSuccess / totalCount;
         long stopTime = System.currentTimeMillis();
         long duration = stopTime - startTime;
 
-        System.out.println("Pi séquentiel : " + pi);
-        System.out.println("Durée séquentielle (ms) : " + duration);
+        double pi = 4.0 * nAtomSuccess / totalCount;
+        System.out.printf("Pi séquentiel: %.5f | Durée séquentielle: %d ms%n", pi, duration);
 
         return duration;
     }
 
-    private void writeResultsToFile(int totalCount, int numWorkers, double pi, long duration, double sp) throws IOException {
-        String filePath = "./results.csv";
+    private void writeResultsToFile(int totalCount, int numWorkers, double pi, long duration) throws IOException {
+        String filePath = "src/main/java/tp4/results.csv";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             if (new java.io.File(filePath).length() == 0) {
-                writer.write("Ntot,NbProc,Pi,Time,SpeedUp\n");
+                writer.write("Ntot,NbProc,Error,Time\n"); // Enregistrement sans le SpeedUp
             }
-            writer.write(totalCount + "," + numWorkers + "," + pi + "," + duration + "," + sp + "\n");
-        }
+            System.out.println((totalCount + "," + numWorkers + "," + String.format("%.5e", Math.abs(Math.PI - pi)) + "," + duration + "\n"));
+            writer.write(totalCount + "," + numWorkers + "," + String.format("%.5e", Math.abs(Math.PI - pi)) + "," + duration + "\n");        }
     }
 }

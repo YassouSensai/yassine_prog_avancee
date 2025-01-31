@@ -5,13 +5,17 @@ import java.util.concurrent.ExecutionException;
 
 public class Pi {
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-        for (int numWorkers = 1; numWorkers <= 8; numWorkers++) {
-            for (int evaluation = 1; evaluation <= 10; evaluation++) {
-                long startTime = System.nanoTime();
-                new Master().doRun(50000, numWorkers);
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime) / 1000000; // Convert to milliseconds
+        Master master = new Master();
+        int totalCount = 50000;
+
+        for (int nbexperiences = 1; nbexperiences <= 3; nbexperiences++) {
+            for (int numWorkers = 1; numWorkers <= 8; numWorkers++) {
+                for (int evaluation = 1; evaluation <= 10000; evaluation++) {
+                    master.doRun(totalCount, numWorkers);
+                }
             }
+
+            totalCount += 50000;
         }
     }
 }
