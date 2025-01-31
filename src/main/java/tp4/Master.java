@@ -15,7 +15,6 @@ public class Master {
     public Master(){}
 
     public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
-
         long startTime = System.currentTimeMillis();
 
         // Create a collection of tasks
@@ -47,21 +46,12 @@ public class Master {
         System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
 
         try {
-            // Code tiré d'openclassroom
-            // Création d'un fileWriter pour écrire dans un fichier
             FileWriter fileWriter = new FileWriter(filename, true);
-
-            // Création d'un bufferedWriter qui utilise le fileWriter
             BufferedWriter writer = new BufferedWriter(fileWriter);
-
-            // ajout d'un texte à notre fichier
             writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount * numWorkers) + " " + numWorkers + " " + (stopTime - startTime));
-
-            // Retour à la ligne
-            writer.newLine();
+            writer.newLine();   // Retour à la ligne
             writer.close();
             System.out.println("Fichier ecrit");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
