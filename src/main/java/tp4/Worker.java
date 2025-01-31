@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 /**
  * Task for running the Monte Carlo simulation.
  */
-class Worker implements Callable<Long>
+public class Worker implements Callable<Long>
 {
     private int numIterations;
     public Worker(int num)
