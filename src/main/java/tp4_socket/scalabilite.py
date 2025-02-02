@@ -3,64 +3,37 @@ import matplotlib.pyplot as plt
 
 # Fonction pour lire les données à partir d'un fichier
 def read_data(file_path):
-    data = []
     with open(file_path, 'r') as file:
-        for line in file:
-            # Remplacer les virgules par des points et diviser la ligne en éléments
-            cleaned_line = line.strip().replace(',', '.')
-            elements = cleaned_line.split()
-
-            # Vérifier que la ligne contient exactement 4 éléments
-            if len(elements) == 4:
-                # Convertir les éléments en nombres flottants
-                error = float(elements[0])
-                total_count = int(elements[1])
-                num_workers = int(elements[2])
-                execution_time = float(elements[3])
-
-                # Ignorer les lignes avec un temps d'exécution nul ou négatif
-                if execution_time > 0:
-                    data.append([error, total_count, num_workers, execution_time])
-
+        # Lire les lignes et remplacer les virgules par des points
+        data = [line.strip().replace(',', '.') for line in file if line.strip()]
     # Convertir les données en tableau NumPy
-    return np.array(data)
+    return np.array([list(map(float, line.split())) for line in data])
 
-# Fonction pour calculer le speedup de manière cumulative
+# Fonction pour calculer le speedup
 def calculate_speedup(data, ntot):
     # Extraire les colonnes
-    temps_execution = data[:, 3]  # temps_ms
+    temps_execution = data[:, 3]  # temps_execution
     nombre_process = data[:, 2]    # nombre_process
 
-    # Trier les données par nombre de processus (au cas où elles ne le seraient pas)
-    sorted_indices = np.argsort(nombre_process)
-    temps_execution = temps_execution[sorted_indices]
-    nombre_process = nombre_process[sorted_indices]
+    T1 = np.median(temps_execution[nombre_process == 1])
 
-    # Calculer la somme des temps pour chaque nombre de processus
     unique_processes = np.unique(nombre_process)
-    sum_temps = []
+    Tp = []
 
     for p in unique_processes:
-        sum_temps.append(np.sum(temps_execution[nombre_process == p]))
+        Tp.append(np.median(temps_execution[nombre_process == p]))
 
-    # Calculer le speedup
-    speedup = []
-    for i in range(len(unique_processes)):
-        if i == 0:
-            # Premier point : speedup = 1
-            speedup.append(sum_temps[i] / sum_temps[i])
-        else:
-            # Speedup = somme des temps pour 1 processus / somme des temps pour p processus
-            speedup.append(sum_temps[0] / sum_temps[i])
+    # Calculer Sp (speedup pour chaque nombre de processus)
+    Sp = T1 / np.array(Tp)
 
-    return speedup, unique_processes
+    return Sp, unique_processes
 
 # Fonction pour tracer le graphique
 def plot_speedup(speedup_data, nombre_process_data, ntot_values):
     plt.figure(figsize=(10, 6))
 
     for speedup, nombre_process, ntot in zip(speedup_data, nombre_process_data, ntot_values):
-        plt.plot(nombre_process, speedup, marker='o', label=f'ntot = {int(ntot)}')
+        plt.plot(nombre_process, speedup, marker='o', label=f'ntot = {ntot}')
 
     plt.title('Speedup en fonction du nombre de processus')
     plt.xlabel('Nombre de processus')
@@ -84,26 +57,31 @@ def plot_speedup(speedup_data, nombre_process_data, ntot_values):
     plt.xticks(x_ticks)
     plt.yticks(y_ticks)
 
-    plt.savefig('./speedup.png')
     plt.show()
 
 # Main
 if __name__ == "__main__":
     file_path = './results.txt'  # Remplacez par le chemin de votre fichier
+    # ntot_values = [12000, 12000000, 120000000]  # Nombre total de fléchettes
 
-    # Lire les données
+    # Lire toutes les données
     data = read_data(file_path)
-    ntot_values = np.unique(data[:, 1])  # Extraire les valeurs uniques de ntot
+#     print(data)
+    ntot_values = np.unique(data[:, 1])
 
+    # Initialiser des listes pour stocker les résultats
     speedup_data = []
     nombre_process_data = []
 
+    # Calculer le speedup pour chaque ensemble de données
     for ntot in ntot_values:
         # Filtrer les données pour le nombre total de fléchettes correspondant
         filtered_data = data[data[:, 1] == ntot]
+        # print(filtered_data)
 
         # Calculer le speedup pour les données filtrées
         speedup, nombre_process = calculate_speedup(filtered_data, ntot)
+        # print(speedup, nombre_process)
 
         # Ajouter les résultats à la liste
         speedup_data.append(speedup)

@@ -7,92 +7,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-/**
- * Creates workers to run the Monte Carlo simulation
- * and aggregates the results.
- */
 public class Master {
-    public Master(){}
+    public Master() {}
 
     public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
         long startTime = System.currentTimeMillis();
 
         // Create a collection of tasks
-        List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
+        List<Callable<Long>> tasks = new ArrayList<>();
         for (int i = 0; i < numWorkers; ++i) {
             tasks.add(new Worker(totalCount));
         }
 
         // Run them and receive a collection of Futures
         ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
-        List<Future<Long>> results = exec.invokeAll(tasks);
-        long total = 0;
-
-        // Assemble the results.
-        for (Future<Long> f : results) {
-            // Call to get() is an implicit barrier.  This will block
-            // until result from corresponding worker is ready.
-            total += f.get();
-        }
-        double pi = 4.0 * total / totalCount / numWorkers;
-
-        long stopTime = System.currentTimeMillis();
-
-        System.out.println("\nValeur approché: " + pi);
-        System.out.println("Erreur: " + String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)));
-
-        System.out.println("N total: " + totalCount * numWorkers);
-        System.out.println("Nombre process: " + numWorkers);
-        System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
-
         try {
-            FileWriter fileWriter = new FileWriter(filename, true);
-            BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount) + " " + numWorkers + " " + (stopTime - startTime));
-            writer.newLine();   // Retour à la ligne
-            writer.close();
-            System.out.println("Fichier ecrit");
-        } catch (IOException e) {
-            e.printStackTrace();
+            List<Future<Long>> results = exec.invokeAll(tasks);
+            long total = 0;
+
+            // Assemble the results
+            for (Future<Long> f : results) {
+                total += f.get();
+            }
+
+            // Calculate pi
+            double pi = 4.0 * total / (totalCount * numWorkers);
+            double error = Math.abs((pi - Math.PI)) / Math.PI;
+
+            long stopTime = System.currentTimeMillis();
+
+            // Print results
+            System.out.println("\nValeur approchée: " + pi);
+            System.out.println("Erreur: " + String.format("%e", error));
+            System.out.println("N total: " + totalCount * numWorkers);
+            System.out.println("Nombre de processus: " + numWorkers);
+            System.out.println("Temps d'exécution: " + (stopTime - startTime) + "ms");
+
+            // Write results to file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+                writer.write(String.format("%e %d %d %d", error, totalCount, numWorkers, (stopTime - startTime)));
+                writer.newLine();
+                System.out.println("Fichier écrit");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return total;
+        } finally {
+            exec.shutdown();
         }
-
-        exec.shutdown();
-        return total;
-    }
-
-    public long doRun(int totalCount, int numWorkers) throws InterruptedException, ExecutionException {
-
-        long startTime = System.currentTimeMillis();
-
-        // Create a collection of tasks
-        List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
-        for (int i = 0; i < numWorkers; ++i) {
-            tasks.add(new Worker(totalCount));
-        }
-
-        // Run them and receive a collection of Futures
-        ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
-        List<Future<Long>> results = exec.invokeAll(tasks);
-        long total = 0;
-
-        // Assemble the results.
-        for (Future<Long> f : results) {
-            // Call to get() is an implicit barrier.  This will block
-            // until result from corresponding worker is ready.
-            total += f.get();
-        }
-        double pi = 4.0 * total / totalCount / numWorkers;
-
-        long stopTime = System.currentTimeMillis();
-
-        System.out.println("\nValeur approché: " + pi);
-        System.out.println("Erreur: " + String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)));
-
-        System.out.println("N total: " + totalCount * numWorkers);
-        System.out.println("Nombre process: " + numWorkers);
-        System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
-
-        exec.shutdown();
-        return total;
     }
 }
