@@ -6,8 +6,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Worker implements Callable<Long> {
     private final int numIterations;
 
-    public Worker(int num) {
-        this.numIterations = num;
+    public Worker(int numIterations) {
+        this.numIterations = numIterations;
     }
 
     @Override

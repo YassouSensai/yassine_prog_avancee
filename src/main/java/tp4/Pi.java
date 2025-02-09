@@ -4,19 +4,22 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public class Pi {
-
     public static void pi(String filename) throws InterruptedException, ExecutionException, IOException {
-        Master master = new Master();
-        int[] totalCounts = {50000};
-        int[] numWorkers = {1, 3, 2, 4, 5, 6};
+        int maxThreads = 6; // Choisir un nombre max de threads
+        Master master = new Master(maxThreads);
+
+        int[] totalCounts = {12000};
+        int[] numWorkers = {1, 2, 3, 4, 5, 6};
 
         for (int totalCount : totalCounts) {
             for (int workers : numWorkers) {
-                for (int evaluation = 1; evaluation <= 10000; evaluation++) {
+                for (int evaluation = 1; evaluation <= 1000000; evaluation++) {
                     master.doRun(totalCount, workers, filename);
                 }
             }
         }
+
+        master.shutdown(); // Arrêter les threads proprement
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
