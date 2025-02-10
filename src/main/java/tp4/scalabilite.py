@@ -7,7 +7,7 @@ def read_data(file_path):
         data = [line.strip().replace(',', '.') for line in file if line.strip()]
     return np.array([list(map(float, line.split())) for line in data])
 
-# Fonction pour calculer le speedup pour chaque taille de problème
+# Fonction pour calculer le speedup
 def calculate_speedup(data, total_counts):
     speedups = {}
     for total_count in total_counts:
@@ -23,7 +23,7 @@ def calculate_speedup(data, total_counts):
         speedups[total_count] = (unique_processes, Sp)
     return speedups
 
-# Fonction pour tracer le graphique avec plusieurs courbes
+# Fonction pour tracer le speedup
 def plot_speedup(speedups):
     plt.figure(figsize=(10, 6))
     for total_count, (nombre_process, speedup) in speedups.items():
@@ -43,8 +43,8 @@ def plot_speedup(speedups):
 
 # Exécution principale
 if __name__ == "__main__":
-    file_path = './results.txt'  # Remplace par ton fichier de résultats
-    total_counts = [16000000, 160000000]  # Tailles de problèmes
+    file_path = "./results.txt"  # Assure-toi que le chemin est correct
+    total_counts = [16_000_000, 160_000_000, 1_600_000_000]  # Tailles de problèmes
     data = read_data(file_path)
     speedups = calculate_speedup(data, total_counts)
     plot_speedup(speedups)

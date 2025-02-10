@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutionException;
 
 public class Pi {
     public static void pi(String filename) throws InterruptedException, ExecutionException, IOException {
-        int maxThreads = 6; // Choisir un nombre max de threads
+        int maxThreads = Runtime.getRuntime().availableProcessors(); // Utiliser tous les cœurs dispo
         Master master = new Master(maxThreads);
 
-        int[] totalCounts = {16000000, 160000000};
-        int[] numWorkers = {1, 2, 3, 4, 5, 6, 7, 8};
+        int[] totalCounts = {16_000_000, 160_000_000, 1_600_000_000}; // Tailles de problème
+        int[] numWorkers = {11, 12}; // Nombre de threads testés
 
         for (int totalCount : totalCounts) {
             for (int workers : numWorkers) {
@@ -19,7 +19,7 @@ public class Pi {
             }
         }
 
-        master.shutdown(); // Arrêter les threads proprement
+        master.shutdown(); // Arrêter les threads après usage
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {

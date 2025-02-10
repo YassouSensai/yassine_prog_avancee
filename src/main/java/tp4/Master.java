@@ -15,9 +15,9 @@ public class Master {
     }
 
     public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime(); // Utiliser nanoTime pour plus de précision
 
-        int iterationsPerThread = totalCount / numWorkers; // Correction importante
+        int iterationsPerThread = totalCount / numWorkers;
 
         // Création des tâches
         List<Callable<Long>> tasks = new ArrayList<>();
@@ -34,20 +34,19 @@ public class Master {
             total += f.get();
         }
 
-        double pi = 4.0 * total / totalCount; // Correction du calcul de π
+        double pi = 4.0 * total / totalCount;
 
-        long stopTime = System.currentTimeMillis();
+        long stopTime = System.nanoTime();
+        long elapsedTime = (stopTime - startTime) / 1_000_000; // Convertir en millisecondes
 
-        System.out.printf("\nValeur approchée: %.10f\n", pi);
-        System.out.printf("Erreur: %e\n", Math.abs((pi - Math.PI)) / Math.PI);
-        System.out.printf("N total: %d\n", totalCount);
-        System.out.printf("Nombre de processus: %d\n", numWorkers);
-        System.out.printf("Temps d'exécution: %d ms\n", stopTime - startTime);
+        // Affichage des résultats
+        System.out.printf("\nPi approximé: %.10f | Erreur: %e | N: %d | Threads: %d | Temps: %d ms\n",
+                pi, Math.abs((pi - Math.PI)) / Math.PI, totalCount, numWorkers, elapsedTime);
 
         // Écrire les résultats dans un fichier
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
-            writer.write(String.format("%e %d %d %d\n", Math.abs((pi - Math.PI)) / Math.PI, totalCount, numWorkers, stopTime - startTime));
-            System.out.println("Fichier écrit");
+            writer.write(String.format("%e %d %d %d\n", Math.abs((pi - Math.PI)) / Math.PI, totalCount, numWorkers, elapsedTime));
+            writer.flush(); // S'assurer que les données sont bien écrites
         } catch (IOException e) {
             e.printStackTrace();
         }
