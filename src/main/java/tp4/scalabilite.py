@@ -44,7 +44,7 @@ def plot_speedup(speedups):
 # Exécution principale
 if __name__ == "__main__":
     file_path = './results.txt'  # Remplace par ton fichier de résultats
-    total_counts = [12000, 120000, 1200000]  # Tailles de problèmes
+    total_counts = [16000000, 160000000]  # Tailles de problèmes
     data = read_data(file_path)
     speedups = calculate_speedup(data, total_counts)
     plot_speedup(speedups)

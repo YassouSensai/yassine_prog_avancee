@@ -8,12 +8,12 @@ public class Pi {
         int maxThreads = 6; // Choisir un nombre max de threads
         Master master = new Master(maxThreads);
 
-        int[] totalCounts = {12000, 120000, 1200000};
-        int[] numWorkers = {1, 2, 3, 4, 5, 6};
+        int[] totalCounts = {16000000, 160000000};
+        int[] numWorkers = {1, 2, 3, 4, 5, 6, 7, 8};
 
         for (int totalCount : totalCounts) {
             for (int workers : numWorkers) {
-                for (int evaluation = 1; evaluation <= 1000000; evaluation++) {
+                for (int evaluation = 1; evaluation <= 10; evaluation++) {
                     master.doRun(totalCount, workers, filename);
                 }
             }
