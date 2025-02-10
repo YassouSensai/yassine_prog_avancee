@@ -8,7 +8,7 @@ public class Pi {
         int maxThreads = 6; // Choisir un nombre max de threads
         Master master = new Master(maxThreads);
 
-        int[] totalCounts = {12000};
+        int[] totalCounts = {12000, 120000, 1200000};
         int[] numWorkers = {1, 2, 3, 4, 5, 6};
 
         for (int totalCount : totalCounts) {

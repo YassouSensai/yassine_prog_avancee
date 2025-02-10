@@ -7,22 +7,28 @@ def read_data(file_path):
         data = [line.strip().replace(',', '.') for line in file if line.strip()]
     return np.array([list(map(float, line.split())) for line in data])
 
-# Fonction pour calculer le speedup
-def calculate_speedup(data):
-    temps_execution = data[:, 3]  # Temps d'exécution
-    nombre_process = data[:, 2]   # Nombre de processus
+# Fonction pour calculer le speedup pour chaque taille de problème
+def calculate_speedup(data, total_counts):
+    speedups = {}
+    for total_count in total_counts:
+        filtered_data = data[data[:, 1] == total_count]  # Filtrer par taille de problème
+        temps_execution = filtered_data[:, 3]  # Temps d'exécution
+        nombre_process = filtered_data[:, 2]   # Nombre de processus
 
-    unique_processes = np.unique(nombre_process)
-    T1 = np.mean(temps_execution[nombre_process == 1])  # Temps pour 1 processus
-    Tp = np.array([np.mean(temps_execution[nombre_process == p]) for p in unique_processes])
-    Sp = T1 / Tp  # Speedup
+        unique_processes = np.unique(nombre_process)
+        T1 = np.mean(temps_execution[nombre_process == 1])  # Temps pour 1 processus
+        Tp = np.array([np.mean(temps_execution[nombre_process == p]) for p in unique_processes])
+        Sp = T1 / Tp  # Speedup
 
-    return unique_processes, Sp
+        speedups[total_count] = (unique_processes, Sp)
+    return speedups
 
-# Fonction pour tracer le graphique
-def plot_speedup(nombre_process, speedup):
+# Fonction pour tracer le graphique avec plusieurs courbes
+def plot_speedup(speedups):
     plt.figure(figsize=(10, 6))
-    plt.plot(nombre_process, speedup, marker='o', linestyle='-', label='Speedup mesuré')
+    for total_count, (nombre_process, speedup) in speedups.items():
+        plt.plot(nombre_process, speedup, marker='o', linestyle='-', label=f'Scalabilité forte (N={total_count})')
+
     plt.plot(nombre_process, nombre_process, linestyle='--', color='blue', label='Speedup idéal')
     plt.axhline(1, color='red', linestyle='--', label='Speedup = 1')
 
@@ -38,6 +44,7 @@ def plot_speedup(nombre_process, speedup):
 # Exécution principale
 if __name__ == "__main__":
     file_path = './results.txt'  # Remplace par ton fichier de résultats
+    total_counts = [12000, 120000, 1200000]  # Tailles de problèmes
     data = read_data(file_path)
-    nombre_process, speedup = calculate_speedup(data)
-    plot_speedup(nombre_process, speedup)
+    speedups = calculate_speedup(data, total_counts)
+    plot_speedup(speedups)
