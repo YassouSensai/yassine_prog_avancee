@@ -14,8 +14,10 @@ public class Pi {
         int maxThreads = Runtime.getRuntime().availableProcessors(); // Utiliser tous les cœurs dispo
         Master master = new Master();
 
-        int[] totalCounts = {160000000, 1600000000}; // Tailles de problème
-        int[] numWorkers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}; // Nombre de threads testés
+        String filename2 = filename;
+
+        int[] totalCounts = {1200000, 12000000, 120000000}; // Tailles de problème
+        int[] numWorkers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // Nombre de threads testés
 
         for (int totalCount : totalCounts) {
             for (int worker : numWorkers) {
@@ -23,7 +25,9 @@ public class Pi {
                     if (scalabilite) {
                         master.doRun(totalCount / worker, worker, filename);
                     } else {
+                        filename = filename.replace(".txt", "_" + totalCount + ".txt");
                         master.doRun(totalCount, worker, filename);
+                        filename = filename2;
                     }
                 }
             }
@@ -36,11 +40,11 @@ public class Pi {
      * et le chemin du fichier dans lequel on va rentrer les résultats.
      */
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-        boolean scalabilite = true; // Scalabilité forte si true, scalabilité faible sinon
+        boolean scalabilite = false; // Scalabilité forte si true, scalabilité faible sinon
 
         if (scalabilite) {
-            pi("src/main/java/tp4/results_fort.txt", scalabilite);
+            pi("src/main/java/tp4/resultats/results_fort.txt", scalabilite);
         } else {
-            pi("src/main/java/tp4/results_faible.txt", scalabilite);
+            pi("src/main/java/tp4/resultats/results_faible.txt", scalabilite);
         }}
 }

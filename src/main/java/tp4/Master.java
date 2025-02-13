@@ -50,16 +50,10 @@ public class Master {
         if (asFilename) {
             try {
                 // Code tiré d'openclassroom
-                // Création d'un fileWriter pour écrire dans un fichier
                 FileWriter fileWriter = new FileWriter(filename, true);
-
-                // Création d'un bufferedWriter qui utilise le fileWriter
                 BufferedWriter writer = new BufferedWriter(fileWriter);
-
-                // ajout d'un texte à notre fichier
                 writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount * numWorkers) + " " + numWorkers + " " + (stopTime - startTime));
 
-                // Retour à la ligne
                 writer.newLine();
                 writer.close();
                 System.out.println("Fichier ecrit");
