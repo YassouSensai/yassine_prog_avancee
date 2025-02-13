@@ -37,7 +37,7 @@ public class WorkerSocket {
 
                 // compute
                 System.out.println("TODO : compute Monte Carlo and send total");
-                tp4.Pi.pi("src/main/java/tp4_socket/results.txt");
+                tp4.Pi.pi("src/main/java/tp4_socket/results.txt", true);
 
                 pWrite.println(str);         // send number of points in quarter of disk
             }else{

@@ -7,54 +7,69 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
+/**
+ * Creates workers to run the Monte Carlo simulation
+ * and aggregates the results.
+ */
 public class Master {
-    private final ExecutorService exec;
-
-    public Master(int maxThreads) {
-        this.exec = Executors.newFixedThreadPool(maxThreads);
-    }
+    public Master(){}
 
     public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
-        long startTime = System.nanoTime(); // Utiliser nanoTime pour plus de précision
+        boolean asFilename = !filename.isEmpty();
 
-        int iterationsPerThread = totalCount / numWorkers;
+        long startTime = System.currentTimeMillis();
 
-        // Création des tâches
-        List<Callable<Long>> tasks = new ArrayList<>();
+        // Create a collection of tasks
+        List<Callable<Long>> tasks = new ArrayList<Callable<Long>>();
         for (int i = 0; i < numWorkers; ++i) {
-            tasks.add(new Worker(iterationsPerThread));
+            tasks.add(new Worker(totalCount));
         }
 
-        // Exécuter les tâches en parallèle
+        // Run them and receive a collection of Futures
+        ExecutorService exec = Executors.newFixedThreadPool(numWorkers);
         List<Future<Long>> results = exec.invokeAll(tasks);
         long total = 0;
 
-        // Récupérer les résultats
+        // Assemble the results.
         for (Future<Long> f : results) {
+            // Call to get() is an implicit barrier.  This will block
+            // until result from corresponding worker is ready.
             total += f.get();
         }
+        double pi = 4.0 * total / totalCount / numWorkers;
 
-        double pi = 4.0 * total / totalCount;
+        long stopTime = System.currentTimeMillis();
 
-        long stopTime = System.nanoTime();
-        long elapsedTime = (stopTime - startTime) / 1_000_000; // Convertir en millisecondes
+        System.out.println("\nValeur approché: " + pi);
+        System.out.println("Erreur: " + String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)));
 
-        // Affichage des résultats
-        System.out.printf("\nPi approximé: %.10f | Erreur: %e | N: %d | Threads: %d | Temps: %d ms\n",
-                pi, Math.abs((pi - Math.PI)) / Math.PI, totalCount, numWorkers, elapsedTime);
+        System.out.println("N total: " + totalCount * numWorkers);
+        System.out.println("Nombre process: " + numWorkers);
+        System.out.println("Temps d'execution: " + (stopTime - startTime) + "ms");
 
-        // Écrire les résultats dans un fichier
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
-            writer.write(String.format("%e %d %d %d\n", Math.abs((pi - Math.PI)) / Math.PI, totalCount, numWorkers, elapsedTime));
-            writer.flush(); // S'assurer que les données sont bien écrites
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (asFilename) {
+            try {
+                // Code tiré d'openclassroom
+                // Création d'un fileWriter pour écrire dans un fichier
+                FileWriter fileWriter = new FileWriter(filename, true);
+
+                // Création d'un bufferedWriter qui utilise le fileWriter
+                BufferedWriter writer = new BufferedWriter(fileWriter);
+
+                // ajout d'un texte à notre fichier
+                writer.write(String.format("%e", (Math.abs((pi - Math.PI)) / Math.PI)) + " " + (totalCount * numWorkers) + " " + numWorkers + " " + (stopTime - startTime));
+
+                // Retour à la ligne
+                writer.newLine();
+                writer.close();
+                System.out.println("Fichier ecrit");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        return total;
-    }
-
-    public void shutdown() {
         exec.shutdown();
+        return total;
     }
 }
