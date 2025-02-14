@@ -1,8 +1,10 @@
 package tp4_socket;
+
+import tp4.Master;
+
 import java.io.*;
 import java.net.*;
-
-import tp4.*;
+import java.util.Random;
 
 /**
  * Worker is a server. It computes PI by Monte Carlo method and sends
@@ -18,7 +20,7 @@ public class WorkerSocket {
      */
     public static void main(String[] args) throws Exception {
 
-        if (!("".equals(args[0]))) port=Integer.parseInt(args[0]);
+        if (!("".equals(args[0]))) port = Integer.parseInt(args[0]);
         System.out.println(port);
         ServerSocket s = new ServerSocket(port);
         System.out.println("Server started on port " + port);
@@ -29,23 +31,43 @@ public class WorkerSocket {
 
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
-        String str;
+        String str, str2;
+        Long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
-            if (!(str.equals("END"))){
-                System.out.println("Server receives totalCount = " +  str);
+            int totalCount = Integer.parseInt(str);
 
-                // compute
-                System.out.println("TODO : compute Monte Carlo and send total");
-                tp4.Pi.pi("src/main/java/tp4_socket/results.txt", true);
+            if (!(str.equals("END"))) {
+                System.out.println("Server receives totalCount = " + str);
 
-                pWrite.println(str);         // send number of points in quarter of disk
-            }else{
-                isRunning=false;
+                str2 = bRead.readLine();
+                int numWorker = Integer.parseInt(str2);
+
+//                circleCount = makeIteration(Integer.parseInt(str));
+
+                Master master = new Master();
+
+                circleCount = master.doRun(totalCount/numWorker, numWorker, "");
+
+                pWrite.println(circleCount.toString());         // send number of points in quarter of disk
+            } else {
+                isRunning = false;
             }
         }
         bRead.close();
         pWrite.close();
         soc.close();
+    }
+
+
+    private static Long makeIteration(int numIterations) {
+        long circleCount = 0;
+        Random prng = new Random();
+        for (int j = 0; j < numIterations; j++) {
+            double x = prng.nextDouble();
+            double y = prng.nextDouble();
+            if ((x * x + y * y) < 1) ++circleCount;
+        }
+        return circleCount;
     }
 }
