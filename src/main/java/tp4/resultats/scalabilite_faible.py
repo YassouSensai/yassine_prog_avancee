@@ -48,9 +48,9 @@ def plot_speedup(speedup_data, nombre_process_data, ntot_values):
 
 if __name__ == "__main__":
     file_paths = [
-        './results_faible_1200000.txt',
-        './results_faible_12000000.txt',
-        './results_faible_120000000.txt'
+        './results_faible_1600000.txt',
+        './results_faible_16000000.txt',
+        './results_faible_160000000.txt'
     ]
 
     speedup_data = []

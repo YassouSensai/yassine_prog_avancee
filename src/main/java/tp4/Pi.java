@@ -16,7 +16,7 @@ public class Pi {
 
         String filename2 = filename;
 
-        int[] totalCounts = {1200000, 12000000, 120000000}; // Tailles de problème
+        int[] totalCounts = {1600000, 16000000, 160000000}; // Tailles de problème
         int[] numWorkers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // Nombre de threads testés
 
         for (int totalCount : totalCounts) {
@@ -40,10 +40,10 @@ public class Pi {
      * et le chemin du fichier dans lequel on va rentrer les résultats.
      */
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-        boolean scalabilite = false; // Scalabilité forte si true, scalabilité faible sinon
+        boolean scalabilite = true; // Scalabilité forte si true, scalabilité faible sinon
 
         if (scalabilite) {
-            pi("src/main/java/tp4/resultats/results_fort.txt", scalabilite);
+            pi("src/main/java/tp4/resultats/results_fort_PC.txt", scalabilite);
         } else {
             pi("src/main/java/tp4/resultats/results_faible.txt", scalabilite);
         }}

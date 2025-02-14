@@ -55,7 +55,7 @@ def plot_speedup(speedup_data, nombre_process_data, ntot_values):
 
 
 if __name__ == "__main__":
-    file_path = './results_fort_M3.txt'  # Chemin du fichier
+    file_path = './results_fort_PC.txt'  # Chemin du fichier
 
     data = read_data(file_path)
 
