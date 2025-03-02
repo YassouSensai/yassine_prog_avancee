@@ -4,7 +4,6 @@ import tp4.Master;
 
 import java.io.*;
 import java.net.*;
-import java.util.Random;
 
 /**
  * Worker is a server. It computes PI by Monte Carlo method and sends
@@ -20,7 +19,7 @@ public class WorkerSocket {
      */
     public static void main(String[] args) throws Exception {
 
-        if (!("".equals(args[0]))) port = Integer.parseInt(args[0]);
+        if (args.length > 0 && !("".equals(args[0]))) port = Integer.parseInt(args[0]);
         System.out.println(port);
         ServerSocket s = new ServerSocket(port);
         System.out.println("Server started on port " + port);
@@ -35,39 +34,24 @@ public class WorkerSocket {
         Long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
-            int totalCount = Integer.parseInt(str);
-
-            if (!(str.equals("END"))) {
-                System.out.println("Server receives totalCount = " + str);
-
-                str2 = bRead.readLine();
-                int numWorker = Integer.parseInt(str2);
-
-//                circleCount = makeIteration(Integer.parseInt(str));
-
-                Master master = new Master();
-
-                circleCount = master.doRun(totalCount/numWorker, numWorker, "");
-
-                pWrite.println(circleCount.toString());         // send number of points in quarter of disk
-            } else {
+            if (str == null || str.equals("END")) {
                 isRunning = false;
+                break;
             }
+
+            int totalCount = Integer.parseInt(str);
+            System.out.println("Server receives totalCount = " + str);
+
+            str2 = bRead.readLine();
+            int numWorker = Integer.parseInt(str2);
+
+            Master master = new Master();
+            circleCount = master.doRun(totalCount, numWorker, "");
+
+            pWrite.println(circleCount.toString());         // send number of points in quarter of disk
         }
         bRead.close();
         pWrite.close();
         soc.close();
-    }
-
-
-    private static Long makeIteration(int numIterations) {
-        long circleCount = 0;
-        Random prng = new Random();
-        for (int j = 0; j < numIterations; j++) {
-            double x = prng.nextDouble();
-            double y = prng.nextDouble();
-            if ((x * x + y * y) < 1) ++circleCount;
-        }
-        return circleCount;
     }
 }

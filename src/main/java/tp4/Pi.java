@@ -43,7 +43,7 @@ public class Pi {
         boolean scalabilite = true; // Scalabilité forte si true, scalabilité faible sinon
 
         if (scalabilite) {
-            pi("src/main/java/tp4/resultats/results_fort_PC.txt", scalabilite);
+            pi("src/main/java/tp4/resultats/results_fort.txt", scalabilite);
         } else {
             pi("src/main/java/tp4/resultats/results_faible.txt", scalabilite);
         }}
