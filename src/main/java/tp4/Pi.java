@@ -1,5 +1,7 @@
 package tp4;
 
+import tp4.Master;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
