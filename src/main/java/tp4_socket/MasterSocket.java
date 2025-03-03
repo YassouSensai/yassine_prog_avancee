@@ -145,7 +145,7 @@ public class MasterSocket {
 		}
 	}
 
-	private static void writeFile(String filename, double pi, int totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
+	private static void writeFile(String filename, double pi, long totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
 		try {
 			// Code tiré d'openclassroom
 			// Création d'un fileWriter pour écrire dans un fichier
