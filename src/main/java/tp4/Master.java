@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 /**
+ *
  * Creates workers to run the Monte Carlo simulation
  * and aggregates the results.
  */
