@@ -1,6 +1,5 @@
 package tp4_socket;
 
-
 import java.io.*;
 import java.net.*;
 
@@ -21,11 +20,11 @@ public class MasterSocket {
 	public static void main(String[] args) throws Exception {
 
 		// MC parameters
-		int totalCount = 1200000000; // total number of throws on a Worker 16000000
+		int totalCount = 2000000; // total number of throws on a Worker 16000000
 		int total = 0; // total number of throws inside quarter of disk
 		double pi;
 
-		String filename = "./resultat.txt";
+		String filename = "./scalabilite.txt";
 
 		int numWorkers = maxServer;
 		int thread_by_worker = 1;
@@ -146,7 +145,7 @@ public class MasterSocket {
 		}
 	}
 
-	private static void writeFile(String filename, double pi, long totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
+	private static void writeFile(String filename, double pi, int totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
 		try {
 			// Code tiré d'openclassroom
 			// Création d'un fileWriter pour écrire dans un fichier

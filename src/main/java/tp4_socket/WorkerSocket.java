@@ -1,4 +1,5 @@
 package tp4_socket;
+
 import tp4.Master;
 
 import java.io.*;
@@ -32,7 +33,7 @@ public class WorkerSocket {
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
         String str, str2;
-        long circleCount;
+        Long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
             int totalCount = Integer.parseInt(str);
@@ -60,7 +61,7 @@ public class WorkerSocket {
 
 
     private static Long makeIteration(int numIterations) {
-        int circleCount = 0;
+        long circleCount = 0;
         Random prng = new Random();
         for (int j = 0; j < numIterations; j++) {
             double x = prng.nextDouble();
@@ -69,5 +70,4 @@ public class WorkerSocket {
         }
         return circleCount;
     }
-
 }
