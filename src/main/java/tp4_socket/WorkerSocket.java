@@ -1,7 +1,5 @@
 package tp4_socket;
 
-import tp4.Master;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,13 +14,15 @@ public class WorkerSocket {
     private static boolean isRunning = true;
 
     /**
-     * compute PI locally by MC and sends the number of points
+     * compute PI locally by MC (Monte Carlo) and sends the number of points
      * inside the disk to Master.
      */
     public static void main(String[] args) throws Exception {
 
-        if (!("".equals(args[0]))) port = Integer.parseInt(args[0]);
-        System.out.println(port);
+        if (args.length > 0 && !("".equals(args[0]))) {
+            port = Integer.parseInt(args[0]);
+        }
+        System.out.println("Port: " + port);
         ServerSocket s = new ServerSocket(port);
         System.out.println("Server started on port " + port);
         Socket soc = s.accept();
@@ -32,42 +32,32 @@ public class WorkerSocket {
 
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
-        String str, str2;
-        Long circleCount;
+        String str;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
-            int totalCount = Integer.parseInt(str);
+            if (!(str.equals("END"))){
+                System.out.println("Server receives totalCount = " +  str);
 
-            if (!(str.equals("END"))) {
-                System.out.println("Server receives totalCount = " + str);
+                // compute
+                long totalCount = Integer.parseInt(str);
+                int insideCircle = 0;
+                Random rand = new Random();
 
-                //str2 = bRead.readLine();
-                int numWorker = Integer.parseInt("1");
+                for (int i = 0; i < totalCount; i++) {
+                    double x = rand.nextDouble();
+                    double y = rand.nextDouble();
+                    if (x*x + y*y <= 1) {
+                        insideCircle++;
+                    }
+                }
 
-
-                Master master = new Master();
-
-                circleCount = master.doRun(totalCount/numWorker, numWorker, "");
-
-                pWrite.println(circleCount.toString());         // send number of points in quarter of disk
-            } else {
-                isRunning = false;
+                pWrite.println(insideCircle);         // send number of points in quarter of disk
+            }else{
+                isRunning=false;
             }
         }
         bRead.close();
         pWrite.close();
         soc.close();
-    }
-
-
-    private static Long makeIteration(int numIterations) {
-        long circleCount = 0;
-        Random prng = new Random();
-        for (int j = 0; j < numIterations; j++) {
-            double x = prng.nextDouble();
-            double y = prng.nextDouble();
-            if ((x * x + y * y) < 1) ++circleCount;
-        }
-        return circleCount;
     }
 }
