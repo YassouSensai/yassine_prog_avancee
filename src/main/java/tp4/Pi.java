@@ -1,7 +1,5 @@
 package tp4;
 
-import tp4.Master;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -45,8 +43,8 @@ public class Pi {
         boolean scalabilite = true; // Scalabilité forte si true, scalabilité faible sinon
 
         if (scalabilite) {
-            pi("src/main/java/tp4/resultats/results_fort.txt", scalabilite);
+            pi("./resultats/results_fort.txt", scalabilite);
         } else {
-            pi("src/main/java/tp4/resultats/results_faible.txt", scalabilite);
+            pi("./resultats/results_faible.txt", scalabilite);
         }}
 }
