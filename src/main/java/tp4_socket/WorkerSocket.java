@@ -32,7 +32,7 @@ public class WorkerSocket {
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
         String str, str2;
-        Long circleCount;
+        long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
             int totalCount = Integer.parseInt(str);
@@ -60,7 +60,7 @@ public class WorkerSocket {
 
 
     private static Long makeIteration(int numIterations) {
-        long circleCount = 0;
+        int circleCount = 0;
         Random prng = new Random();
         for (int j = 0; j < numIterations; j++) {
             double x = prng.nextDouble();
