@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
  * Task for running the Monte Carlo simulation.
  */
 class Worker implements Callable<Long> {
-    private long numIterations;
+    private int numIterations;
 
     public Worker(long num) {
         this.numIterations = num;
@@ -15,7 +15,7 @@ class Worker implements Callable<Long> {
 
     @Override
     public Long call() {
-        long circleCount = 0;
+        int circleCount = 0;
         Random prng = new Random();
         for (int j = 0; j < numIterations; j++) {
             double x = prng.nextDouble();

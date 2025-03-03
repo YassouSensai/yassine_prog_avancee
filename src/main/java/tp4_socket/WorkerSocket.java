@@ -35,7 +35,7 @@ public class WorkerSocket {
         long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
-            long totalCount = Integer.parseInt(str);
+            int totalCount = Integer.parseInt(str);
 
             if (!(str.equals("END"))) {
                 System.out.println("Server receives totalCount = " + str);
@@ -60,7 +60,7 @@ public class WorkerSocket {
 
 
     private static Long makeIteration(int numIterations) {
-        long circleCount = 0;
+        int circleCount = 0;
         Random prng = new Random();
         for (int j = 0; j < numIterations; j++) {
             double x = prng.nextDouble();
