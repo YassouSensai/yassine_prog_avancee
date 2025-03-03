@@ -7,11 +7,11 @@ import java.net.*;
  * Master is a client. It makes requests to numWorkers.
  */
 public class MasterSocket {
-	static int maxServer = 8; // 8
-	static final int[] tab_port = {25545, 25546, 25547, 25548, 25549, 25550, 25551, 25552};
+	static int maxServer = 12; // 8
+	static final int[] tab_port = {25545, 25546, 25547, 25548, 25549, 25550, 25551, 25552, 25553, 25554, 25555, 25556};
 	static final int initial_port = 25545;
 	static String[] tab_total_workers = new String[maxServer];
-	static final String[] ip = {"127.0.0.1"};
+	static final String[] ip = {"127.0.0.1", "127.0.0.1", "127.0.0.1", "127.0.0.1", "127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1","127.0.0.1"};
 	static BufferedReader[] reader = new BufferedReader[maxServer];
 	static PrintWriter[] writer = new PrintWriter[maxServer];
 	static Socket[] sockets = new Socket[maxServer];
@@ -20,11 +20,11 @@ public class MasterSocket {
 	public static void main(String[] args) throws Exception {
 
 		// MC parameters
-		int totalCount = 1200000; // total number of throws on a Worker 16000000
+		int totalCount = 1200000000; // total number of throws on a Worker 16000000
 		int total = 0; // total number of throws inside quarter of disk
 		double pi;
 
-		String filename = "./scalabilite.txt";
+		String filename = "./out_mws_g26_4c.txt";
 
 		int numWorkers = maxServer;
 		int thread_by_worker = 1;
@@ -48,7 +48,7 @@ public class MasterSocket {
 		try {
 			s = bufferRead.readLine();
 			thread_by_worker = Integer.parseInt(s);
-			System.out.println(numWorkers);
+			System.out.println(thread_by_worker);
 		} catch (IOException ioE) {
 			ioE.printStackTrace();
 		}
@@ -66,7 +66,8 @@ public class MasterSocket {
 		//create worker's socket
 		for (int i = 0; i < numWorkers; i++) {
 			try {
-				sockets[i] = new Socket(ip[i], tab_port[i]);
+				System.out.println("PORT : " + (initial_port + i));
+				sockets[i] = new Socket(ip[i], initial_port + i);
 				System.out.println("SOCKET = " + sockets[i]);
 
 				reader[i] = new BufferedReader(new InputStreamReader(sockets[i].getInputStream()));
@@ -82,12 +83,11 @@ public class MasterSocket {
 
 
 		String message_repeat = "y";
-		int iterationCount = 0;
-		int maxIterations = 10;
 
 		long stopTime, startTime;
 
-		while (iterationCount < maxIterations) {
+//        while (message_repeat.equals("y")) {
+		for (int y = 0; y < 10; y++) {
 
 			total = 0;
 
@@ -112,7 +112,7 @@ public class MasterSocket {
 			for (int i = 0; i < numWorkers; i++) {
 				total += Integer.parseInt(tab_total_workers[i]);
 			}
-			pi = 4.0 * total / totalCount;
+			pi = 4.0 * total / totalCount ; // / numWorkers
 
 			stopTime = System.currentTimeMillis();
 
@@ -134,7 +134,6 @@ public class MasterSocket {
 //            } catch (IOException ioE) {
 //                ioE.printStackTrace();
 //            }
-			iterationCount++;
 		}
 
 		for (int i = 0; i < numWorkers; i++) {
