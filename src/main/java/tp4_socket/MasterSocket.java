@@ -24,7 +24,7 @@ public class MasterSocket {
 		int total = 0; // total number of throws inside quarter of disk
 		double pi;
 
-		String filename = "./out_mws_g26_4c.txt";
+		String filename = "./resultat.txt";
 
 		int numWorkers = maxServer;
 		int thread_by_worker = 1;

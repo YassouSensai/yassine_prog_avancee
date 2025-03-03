@@ -1,9 +1,9 @@
 package tp4_socket;
-
 import tp4.Master;
 
 import java.io.*;
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Random;
 
 /**
@@ -20,9 +20,7 @@ public class WorkerSocket {
      */
     public static void main(String[] args) throws Exception {
 
-        if (!("".equals(args[0]))) {
-            port = Integer.parseInt(args[0]);
-        }
+        if (!("".equals(args[0]))) port = Integer.parseInt(args[0]);
         System.out.println(port);
         ServerSocket s = new ServerSocket(port);
         System.out.println("Server started on port " + port);
@@ -45,7 +43,6 @@ public class WorkerSocket {
                 str2 = bRead.readLine();
                 int numWorker = Integer.parseInt(str2);
 
-//                circleCount = makeIteration(Integer.parseInt(str));
 
                 Master master = new Master();
 
