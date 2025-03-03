@@ -66,7 +66,7 @@ public class MasterSocket {
 		//create worker's socket
 		for (int i = 0; i < numWorkers; i++) {
 			try {
-				sockets[i] = new Socket(ip[i], initial_port + i);
+				sockets[i] = new Socket(ip[i], tab_port[i]);
 				System.out.println("SOCKET = " + sockets[i]);
 
 				reader[i] = new BufferedReader(new InputStreamReader(sockets[i].getInputStream()));
