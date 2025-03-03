@@ -41,8 +41,8 @@ public class WorkerSocket {
             if (!(str.equals("END"))) {
                 System.out.println("Server receives totalCount = " + str);
 
-                str2 = bRead.readLine();
-                int numWorker = Integer.parseInt(str2);
+                //str2 = bRead.readLine();
+                int numWorker = Integer.parseInt("1");
 
 
                 Master master = new Master();
