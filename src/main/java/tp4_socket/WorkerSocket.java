@@ -32,10 +32,10 @@ public class WorkerSocket {
         // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
         String str, str2;
-        Long circleCount;
+        long circleCount;
         while (isRunning) {
             str = bRead.readLine();          // read message from Master
-            int totalCount = Integer.parseInt(str);
+            long totalCount = Integer.parseInt(str);
 
             if (!(str.equals("END"))) {
                 System.out.println("Server receives totalCount = " + str);

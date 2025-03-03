@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 public class Master {
     public Master(){}
 
-    public long doRun(int totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
+    public long doRun(long totalCount, int numWorkers, String filename) throws InterruptedException, ExecutionException {
         boolean asFilename = !filename.isEmpty();
 
         long startTime = System.currentTimeMillis();
