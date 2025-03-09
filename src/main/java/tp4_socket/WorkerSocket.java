@@ -27,30 +27,26 @@ public class WorkerSocket {
         System.out.println("Server started on port " + port);
         Socket soc = s.accept();
 
-        // BufferedReader bRead for reading message from Master
         BufferedReader bRead = new BufferedReader(new InputStreamReader(soc.getInputStream()));
 
-        // PrintWriter pWrite for writing message to Master
         PrintWriter pWrite = new PrintWriter(new BufferedWriter(new OutputStreamWriter(soc.getOutputStream())), true);
         String str, str2;
         Long circleCount;
         while (isRunning) {
-            str = bRead.readLine();          // read message from Master
+            str = bRead.readLine();
             long totalCount = Long.parseLong(str);
 
             if (!(str.equals("END"))) {
                 System.out.println("Server receives totalCount = " + str);
 
                 str2 = bRead.readLine();
-                int numWorker = Integer.parseInt(str2); // str2 à la place de "1"
-
-//                circleCount = makeIteration(Integer.parseInt(str));
+                int numWorker = Integer.parseInt(str2);
 
                 Master master = new Master();
 
                 circleCount = master.doRun(totalCount/numWorker, numWorker, "");
 
-                pWrite.println(circleCount.toString());         // send number of points in quarter of disk
+                pWrite.println(circleCount.toString());
             } else {
                 isRunning = false;
             }
