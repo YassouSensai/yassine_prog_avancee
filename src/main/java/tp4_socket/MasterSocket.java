@@ -20,11 +20,11 @@ public class MasterSocket {
 	public static void main(String[] args) throws Exception {
 
 		// MC parameters
-		int totalCount = 2000000; // total number of throws on a Worker 16000000
-		int total = 0; // total number of throws inside quarter of disk
+		long totalCount = 64000000000L; // total number of throws on a Worker 16000000
+		long total = 0; // total number of throws inside quarter of disk
 		double pi;
 
-		String filename = "./scalabilite.txt";
+		String filename = "./out_mws_g26_4c_d_final.txt";
 
 		int numWorkers = maxServer;
 		int thread_by_worker = 1;
@@ -110,7 +110,7 @@ public class MasterSocket {
 
 			// compute PI with the result of each workers
 			for (int i = 0; i < numWorkers; i++) {
-				total += Integer.parseInt(tab_total_workers[i]);
+				total += Long.parseLong(tab_total_workers[i]);
 			}
 			pi = 4.0 * total / totalCount ; // / numWorkers
 
@@ -145,7 +145,7 @@ public class MasterSocket {
 		}
 	}
 
-	private static void writeFile(String filename, double pi, int totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
+	private static void writeFile(String filename, double pi, long totalCount, int numWorkers, int thread_by_worker, long startTime, long stopTime) throws IOException {
 		try {
 			// Code tiré d'openclassroom
 			// Création d'un fileWriter pour écrire dans un fichier
